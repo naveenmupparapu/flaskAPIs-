@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Registration</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Sans+Pro:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="background-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+    
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <span class="logo-icon">📚</span>
+                <span class="logo-text">EduRegister</span>
+            </div>
+            <nav class="nav">
+                <a href="{{ url_for('students') }}" class="nav-link">View Students</a>
+            </nav>
+        </header>
+
+        <main class="main-content">
+            <div class="form-wrapper">
+                <div class="form-header">
+                    <h1>Student Registration</h1>
+                    <p>Begin your academic journey with us</p>
+                </div>
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <form action="{{ url_for('register') }}" method="POST" class="registration-form" id="regForm">
+                    <div class="form-section">
+                        <h3 class="section-title">Personal Information</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="first_name">First Name</label>
+                                <input type="text" id="first_name" name="first_name" required placeholder="Enter first name">
+                                <span class="input-highlight"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="last_name">Last Name</label>
+                                <input type="text" id="last_name" name="last_name" required placeholder="Enter last name">
+                                <span class="input-highlight"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <input type="email" id="email" name="email" required placeholder="student@example.com">
+                                <span class="input-highlight"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Phone Number</label>
+                                <input type="tel" id="phone" name="phone" required placeholder="+1 (555) 000-0000">
+                                <span class="input-highlight"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="date_of_birth">Date of Birth</label>
+                                <input type="date" id="date_of_birth" name="date_of_birth" required>
+                                <span class="input-highlight"></span>
+                            </div>
+                            <div class="form-group">
+                                <label>Gender</label>
+                                <div class="radio-group">
+                                    <label class="radio-label">
+                                        <input type="radio" name="gender" value="Male" required>
+                                        <span class="radio-custom"></span>
+                                        Male
+                                    </label>
+                                    <label class="radio-label">
+                                        <input type="radio" name="gender" value="Female">
+                                        <span class="radio-custom"></span>
+                                        Female
+                                    </label>
+                                    <label class="radio-label">
+                                        <input type="radio" name="gender" value="Other">
+                                        <span class="radio-custom"></span>
+                                        Other
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3 class="section-title">Address Details</h3>
+                        <div class="form-group full-width">
+                            <label for="address">Street Address</label>
+                            <input type="text" id="address" name="address" required placeholder="123 Main Street, Apt 4B">
+                            <span class="input-highlight"></span>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="city">City</label>
+                                <input type="text" id="city" name="city" required placeholder="New York">
+                                <span class="input-highlight"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="course">Course of Study</label>
+                                <select id="course" name="course" required>
+                                    <option value="">Select a course</option>
+                                    <option value="Computer Science">Computer Science</option>
+                                    <option value="Business Administration">Business Administration</option>
+                                    <option value="Mechanical Engineering">Mechanical Engineering</option>
+                                    <option value="Electrical Engineering">Electrical Engineering</option>
+                                    <option value="Civil Engineering">Civil Engineering</option>
+                                    <option value="Medicine">Medicine</option>
+                                    <option value="Law">Law</option>
+                                    <option value="Arts & Design">Arts & Design</option>
+                                    <option value="Psychology">Psychology</option>
+                                    <option value="Mathematics">Mathematics</option>
+                                </select>
+                                <span class="input-highlight"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="reset" class="btn btn-secondary">Clear Form</button>
+                        <button type="submit" class="btn btn-primary">
+                            <span>Register Now</span>
+                            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>© 2024 EduRegister. Empowering Education.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Form validation and animation
+        document.querySelectorAll('.form-group input, .form-group select').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('focused');
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.classList.remove('focused');
+                if (this.value) {
+                    this.parentElement.classList.add('filled');
+                } else {
+                    this.parentElement.classList.remove('filled');
+                }
+            });
+        });
+
+        // Smooth form submission
+        document.getElementById('regForm').addEventListener('submit', function(e) {
+            const btn = this.querySelector('.btn-primary');
+            btn.classList.add('loading');
+            btn.innerHTML = '<span class="spinner"></span> Registering...';
+        });
+    </script>
+</body>
+</html>
+
