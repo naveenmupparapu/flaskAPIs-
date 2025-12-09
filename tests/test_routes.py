@@ -90,6 +90,35 @@ class TestStudentsRouteResponses:
         assert 'text/html' in response.content_type
 
 
+class TestDeleteStudentRouteResponses:
+    """Test HTTP responses for delete student route."""
+
+    def test_delete_method_post_allowed(self, client, sample_student_data, test_app):
+        """Test POST method deletes a student."""
+        client.post('/register', data=sample_student_data, follow_redirects=True)
+        with test_app.app_context():
+            student = Student.query.filter_by(email='john.doe@example.com').first()
+            student_id = student.id
+
+        response = client.post(f'/students/{student_id}/delete', follow_redirects=False)
+        assert response.status_code in [302, 200]
+
+    def test_delete_method_get_not_allowed(self, client, sample_student_data, test_app):
+        """Test GET method returns 405 on delete route."""
+        client.post('/register', data=sample_student_data, follow_redirects=True)
+        with test_app.app_context():
+            student = Student.query.filter_by(email='john.doe@example.com').first()
+            student_id = student.id
+
+        response = client.get(f'/students/{student_id}/delete')
+        assert response.status_code == 405
+
+    def test_delete_nonexistent_returns_404(self, client):
+        """Test deleting non-existent student returns 404."""
+        response = client.post('/students/99999/delete')
+        assert response.status_code == 404
+
+
 class TestStaticRoutes:
     """Test static file serving."""
 
