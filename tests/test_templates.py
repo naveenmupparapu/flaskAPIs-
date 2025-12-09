@@ -113,6 +113,12 @@ class TestStudentsTemplate:
         response = client.get('/students')
         assert b'student-mini-card' in response.data
 
+    def test_students_renders_delete_button(self, client, sample_student_data):
+        """Test students page renders delete button for each student."""
+        client.post('/register', data=sample_student_data, follow_redirects=True)
+        response = client.get('/students')
+        assert b'Delete' in response.data
+
     def test_students_renders_icons(self, client, sample_student_data):
         """Test students page renders contact icons."""
         client.post('/register', data=sample_student_data, follow_redirects=True)

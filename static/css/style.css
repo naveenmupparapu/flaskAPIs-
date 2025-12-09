@@ -464,6 +464,18 @@ body {
     background: var(--color-light);
     border-color: var(--color-secondary);
 }
+.btn-delete {
+    padding: 10px 16px;
+    font-size: 14px;
+    border: 2px solid var(--color-error);
+    color: var(--color-error);
+}
+
+.btn-delete:hover {
+    background: #ffe5e5;
+    border-color: #d9534f;
+    color: #b52b27;
+}
 
 .btn-icon {
     width: 20px;
@@ -794,6 +806,14 @@ body {
     padding: 16px 20px;
     background: var(--color-background);
     border-top: 1px solid var(--color-light);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.delete-form {
+    margin: 0;
 }
 
 /* Empty State */

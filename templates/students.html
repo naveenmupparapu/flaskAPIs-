@@ -69,6 +69,9 @@
                         </div>
                         <div class="mini-card-footer">
                             <span class="course-badge small">{{ student.course }}</span>
+                            <form class="delete-form" action="{{ url_for('delete_student', student_id=student.id) }}" method="POST">
+                                <button type="submit" class="btn btn-secondary btn-delete">Delete</button>
+                            </form>
                         </div>
                     </div>
                     {% endfor %}

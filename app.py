@@ -85,6 +85,14 @@ def students():
     all_students = Student.query.order_by(Student.registration_date.desc()).all()
     return render_template('students.html', students=all_students)
 
-if __name__ == '__main__':
+@app.route('/students/<int:student_id>/delete', methods=['POST'])
+def delete_student(student_id):
+    student = Student.query.get_or_404(student_id)
+    db.session.delete(student)
+    db.session.commit()
+    flash('Student deleted successfully!', 'success')
+    return redirect(url_for('students'))
+
+if __name__ == '__main__':  # pragma: no cover
     app.run(debug=True, port=5000)
 
