@@ -78,7 +78,8 @@ def register():
 @app.route('/success/<int:student_id>')
 def success(student_id):
     student = Student.query.get_or_404(student_id)
-    return render_template('success.html', student=student)
+    is_update = request.args.get('updated') == '1'
+    return render_template('success.html', student=student, is_update=is_update)
 
 @app.route('/students')
 def students():
@@ -92,6 +93,52 @@ def delete_student(student_id):
     db.session.commit()
     flash('Student deleted successfully!', 'success')
     return redirect(url_for('students'))
+
+@app.route('/students/<int:student_id>/edit', methods=['GET', 'POST'])
+def edit_student(student_id):
+    student = Student.query.get_or_404(student_id)
+
+    if request.method == 'POST':
+        try:
+            first_name = request.form['first_name']
+            last_name = request.form['last_name']
+            email = request.form['email']
+            phone = request.form['phone']
+            dob_str = request.form['date_of_birth']
+            gender = request.form['gender']
+            address = request.form['address']
+            city = request.form['city']
+            course = request.form['course']
+
+            date_of_birth = datetime.strptime(dob_str, '%Y-%m-%d').date()
+
+            existing_student = Student.query.filter(
+                Student.email == email,
+                Student.id != student_id
+            ).first()
+            if existing_student:
+                flash('A student with this email already exists!', 'error')
+                return redirect(url_for('edit_student', student_id=student_id))
+
+            student.first_name = first_name
+            student.last_name = last_name
+            student.email = email
+            student.phone = phone
+            student.date_of_birth = date_of_birth
+            student.gender = gender
+            student.address = address
+            student.city = city
+            student.course = course
+
+            db.session.commit()
+
+            flash('Student updated successfully!', 'success')
+            return redirect(url_for('success', student_id=student.id, updated=1))
+        except Exception as e:
+            flash(f'Update failed: {str(e)}', 'error')
+            return redirect(url_for('edit_student', student_id=student_id))
+
+    return render_template('edit_student.html', student=student)
 
 if __name__ == '__main__':  # pragma: no cover
     app.run(debug=True, port=5000)

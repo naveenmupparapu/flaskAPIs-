@@ -58,6 +58,15 @@ class TestSuccessTemplate:
         assert b'Welcome aboard' in response.data
         assert b'John' in response.data
 
+    def test_success_renders_update_message(self, client, sample_student_data):
+        """Test success page shows update text when coming from edit."""
+        response = client.post('/register', data=sample_student_data, follow_redirects=True)
+        assert response.status_code == 200
+        # Now update
+        response = client.post('/students/1/edit', data=sample_student_data, follow_redirects=True)
+        assert b'Update Successful' in response.data
+        assert b'Details updated for' in response.data
+
     def test_success_renders_student_card(self, client, sample_student_data):
         """Test success page renders student card."""
         response = client.post('/register', data=sample_student_data, follow_redirects=True)
@@ -112,6 +121,12 @@ class TestStudentsTemplate:
         client.post('/register', data=sample_student_data, follow_redirects=True)
         response = client.get('/students')
         assert b'student-mini-card' in response.data
+
+    def test_students_renders_update_button(self, client, sample_student_data):
+        """Test students page renders update button for each student."""
+        client.post('/register', data=sample_student_data, follow_redirects=True)
+        response = client.get('/students')
+        assert b'Update' in response.data
 
     def test_students_renders_delete_button(self, client, sample_student_data):
         """Test students page renders delete button for each student."""

@@ -360,6 +360,26 @@ class TestStudentsRoute:
         assert response.status_code == 200
         assert b'JD' in response.data
 
+    def test_update_student(self, client, test_app, sample_student_data):
+        """Test updating a student updates stored values."""
+        client.post('/register', data=sample_student_data, follow_redirects=True)
+
+        with test_app.app_context():
+            student = Student.query.filter_by(email='john.doe@example.com').first()
+            student_id = student.id
+
+        updated_data = sample_student_data.copy()
+        updated_data['first_name'] = 'Johnny'
+        updated_data['city'] = 'Boston'
+
+        response = client.post(f'/students/{student_id}/edit', data=updated_data, follow_redirects=True)
+        assert response.status_code == 200
+
+        with test_app.app_context():
+            refreshed = Student.query.get(student_id)
+            assert refreshed.first_name == 'Johnny'
+            assert refreshed.city == 'Boston'
+
     def test_delete_student_removes_record(self, client, test_app, sample_student_data):
         """Test deleting a student removes it from the list and database."""
         client.post('/register', data=sample_student_data, follow_redirects=True)

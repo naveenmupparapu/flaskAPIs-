@@ -90,6 +90,44 @@ class TestStudentsRouteResponses:
         assert 'text/html' in response.content_type
 
 
+class TestEditStudentRouteResponses:
+    """Test HTTP responses for edit student route."""
+
+    def test_edit_get_allowed(self, client, sample_student_data, test_app):
+        client.post('/register', data=sample_student_data, follow_redirects=True)
+        with test_app.app_context():
+            student = Student.query.filter_by(email='john.doe@example.com').first()
+            student_id = student.id
+        response = client.get(f'/students/{student_id}/edit')
+        assert response.status_code == 200
+
+    def test_edit_post_updates(self, client, sample_student_data, test_app):
+        client.post('/register', data=sample_student_data, follow_redirects=True)
+        with test_app.app_context():
+            student = Student.query.filter_by(email='john.doe@example.com').first()
+            student_id = student.id
+        updated = sample_student_data.copy()
+        updated['city'] = 'Chicago'
+        response = client.post(f'/students/{student_id}/edit', data=updated, follow_redirects=True)
+        assert response.status_code in [200, 302]
+
+    def test_edit_nonexistent_returns_404(self, client):
+        response = client.get('/students/99999/edit')
+        assert response.status_code == 404
+
+    def test_edit_duplicate_email_blocked(self, client, sample_student_data, another_student_data, test_app):
+        client.post('/register', data=sample_student_data, follow_redirects=True)
+        client.post('/register', data=another_student_data, follow_redirects=True)
+        with test_app.app_context():
+            target = Student.query.filter_by(email='john.doe@example.com').first()
+            target_id = target.id
+        updated = sample_student_data.copy()
+        updated['email'] = another_student_data['email']
+        response = client.post(f'/students/{target_id}/edit', data=updated, follow_redirects=True)
+        assert response.status_code == 200
+        assert b'already exists' in response.data
+
+
 class TestDeleteStudentRouteResponses:
     """Test HTTP responses for delete student route."""
 

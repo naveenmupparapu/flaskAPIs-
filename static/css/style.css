@@ -349,22 +349,31 @@ body {
 /* Radio Group */
 .radio-group {
     display: flex;
-    gap: 20px;
+    flex-wrap: wrap;
+    gap: 12px;
     padding-top: 8px;
 }
 
 .radio-label {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     cursor: pointer;
     font-weight: 500;
     color: var(--color-text);
-    transition: color var(--transition-fast);
+    background: var(--color-white);
+    padding: 10px 14px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-light);
+    box-shadow: var(--shadow-soft);
+    transition: all var(--transition-fast);
+    min-width: 140px;
 }
 
 .radio-label input[type="radio"] {
-    display: none;
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
 }
 
 .radio-custom {
@@ -399,6 +408,11 @@ body {
 
 .radio-label:hover .radio-custom {
     border-color: var(--color-secondary);
+}
+
+.radio-label:hover {
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-1px);
 }
 
 /* Select Styling */
@@ -463,6 +477,10 @@ body {
 .btn-secondary:hover {
     background: var(--color-light);
     border-color: var(--color-secondary);
+}
+.btn-small {
+    padding: 10px 14px;
+    font-size: 14px;
 }
 .btn-delete {
     padding: 10px 16px;
@@ -807,9 +825,15 @@ body {
     background: var(--color-background);
     border-top: 1px solid var(--color-light);
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    flex-direction: column;
     gap: 12px;
+}
+
+.card-actions {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    justify-content: space-between;
 }
 
 .delete-form {

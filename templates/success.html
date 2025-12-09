@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registration Successful</title>
+    <title>{% if is_update %}Update Successful{% else %}Registration Successful{% endif %}</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Sans+Pro:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
@@ -28,6 +28,16 @@
 
         <main class="main-content">
             <div class="success-wrapper">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
                 <div class="success-animation">
                     <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
                         <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
@@ -35,8 +45,14 @@
                     </svg>
                 </div>
                 
-                <h1>Registration Successful!</h1>
-                <p class="success-message">Welcome aboard, {{ student.first_name }}!</p>
+                <h1>{% if is_update %}Update Successful!{% else %}Registration Successful!{% endif %}</h1>
+                <p class="success-message">
+                    {% if is_update %}
+                        Details updated for {{ student.first_name }} {{ student.last_name }}.
+                    {% else %}
+                        Welcome aboard, {{ student.first_name }}!
+                    {% endif %}
+                </p>
 
                 <div class="student-card">
                     <div class="card-header">
