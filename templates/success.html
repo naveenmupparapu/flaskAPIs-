@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if is_update %}Update Successful{% else %}Registration Successful{% endif %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Sans+Pro:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="background-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+    
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <span class="logo-icon">📚</span>
+                <span class="logo-text">EduRegister</span>
+            </div>
+            <nav class="nav">
+                <a href="{{ url_for('index') }}" class="nav-link">New Registration</a>
+                <a href="{{ url_for('students') }}" class="nav-link">View Students</a>
+            </nav>
+        </header>
+
+        <main class="main-content">
+            <div class="success-wrapper">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <div class="success-animation">
+                    <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                        <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
+                        <path class="checkmark-check" fill="none" d="m14.1 27.2 7.1 7.2 16.7-16.8"/>
+                    </svg>
+                </div>
+                
+                <h1>{% if is_update %}Update Successful!{% else %}Registration Successful!{% endif %}</h1>
+                <p class="success-message">
+                    {% if is_update %}
+                        Details updated for {{ student.first_name }} {{ student.last_name }}.
+                    {% else %}
+                        Welcome aboard, {{ student.first_name }}!
+                    {% endif %}
+                </p>
+
+                <div class="student-card">
+                    <div class="card-header">
+                        <div class="student-avatar">
+                            {{ student.first_name[0] }}{{ student.last_name[0] }}
+                        </div>
+                        <div class="student-name">
+                            <h2>{{ student.first_name }} {{ student.last_name }}</h2>
+                            <span class="student-id">ID: STU-{{ '%04d'|format(student.id) }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card-body">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="info-label">Email</span>
+                                <span class="info-value">{{ student.email }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Phone</span>
+                                <span class="info-value">{{ student.phone }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Date of Birth</span>
+                                <span class="info-value">{{ student.date_of_birth.strftime('%B %d, %Y') }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Gender</span>
+                                <span class="info-value">{{ student.gender }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Address</span>
+                                <span class="info-value">{{ student.address }}, {{ student.city }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Course</span>
+                                <span class="info-value course-badge">{{ student.course }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-footer">
+                        <span class="registration-date">
+                            Registered on {{ student.registration_date.strftime('%B %d, %Y at %I:%M %p') }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <a href="{{ url_for('index') }}" class="btn btn-primary">
+                        <span>Register Another Student</span>
+                    </a>
+                    <a href="{{ url_for('students') }}" class="btn btn-secondary">
+                        <span>View All Students</span>
+                    </a>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>© 2024 EduRegister. Empowering Education.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Confetti animation on success
+        function createConfetti() {
+            const colors = ['#E8B4B8', '#67595E', '#A49393', '#EED6D3'];
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = Math.random() * 3 + 's';
+                confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                document.body.appendChild(confetti);
+            }
+            setTimeout(() => {
+                document.querySelectorAll('.confetti').forEach(c => c.remove());
+            }, 5000);
+        }
+        createConfetti();
+    </script>
+</body>
+</html>
+
