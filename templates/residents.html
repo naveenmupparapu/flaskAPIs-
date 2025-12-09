@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="panel">
+  <div class="panel-header">
+    <h2>Residents</h2>
+  </div>
+
+  <form class="form" method="post">
+    <div class="form-row">
+      <label for="full_name">Full name</label>
+      <input id="full_name" name="full_name" type="text" placeholder="Jane Doe" required>
+    </div>
+    <div class="form-row">
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" placeholder="jane@example.com">
+    </div>
+    <div class="form-row">
+      <label for="phone">Phone</label>
+      <input id="phone" name="phone" type="tel" placeholder="+1 555 123 4567">
+    </div>
+    <div class="form-row">
+      <label for="room_id">Assign to room</label>
+      <select id="room_id" name="room_id" required>
+        <option value="">Select room</option>
+        {% for room in rooms %}
+          <option value="{{ room.id }}" {% if not room.has_space %}disabled{% endif %}>
+            {{ room.name }} ({{ room.occupied }}/{{ room.capacity }})
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-actions">
+      <button type="submit">Check in</button>
+    </div>
+  </form>
+
+  <div class="table">
+    <div class="table-head">
+      <div>Name</div>
+      <div>Room</div>
+      <div>Checked in</div>
+      <div>Contact</div>
+      <div>Actions</div>
+    </div>
+    {% for resident, room in residents %}
+      <div class="table-row">
+        <div>{{ resident.full_name }}</div>
+        <div>{{ room.name if room else "Unassigned" }}</div>
+        <div>{{ resident.check_in.strftime("%Y-%m-%d %H:%M") }}</div>
+        <div class="muted">
+          {{ resident.email or "—" }}{% if resident.phone %} | {{ resident.phone }}{% endif %}
+        </div>
+        <div>
+          <form method="post" action="{{ url_for('checkout_resident', resident_id=resident.id) }}" onsubmit="return confirm('Check out this resident?')">
+            <button type="submit">Check out</button>
+          </form>
+        </div>
+      </div>
+    {% else %}
+      <div class="table-row muted">No residents yet.</div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}
+

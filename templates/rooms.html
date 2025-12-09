@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="panel">
+  <div class="panel-header">
+    <h2>Rooms</h2>
+  </div>
+
+  <form class="form" method="post">
+    <div class="form-row">
+      <label for="name">Room name</label>
+      <input id="name" name="name" type="text" placeholder="A101" required>
+    </div>
+    <div class="form-row">
+      <label for="capacity">Capacity</label>
+      <input id="capacity" name="capacity" type="number" min="1" value="2" required>
+    </div>
+    <div class="form-actions">
+      <button type="submit">Add room</button>
+    </div>
+  </form>
+
+  <div class="table">
+    <div class="table-head">
+      <div>Name</div>
+      <div>Capacity</div>
+      <div>Occupied</div>
+      <div>Status</div>
+      <div>Actions</div>
+    </div>
+    {% for room in rooms %}
+      <div class="table-row">
+        <div>{{ room.name }}</div>
+        <div>{{ room.capacity }}</div>
+        <div>{{ room.occupied }}</div>
+        <div class="{{ 'ok' if room.has_space else 'warn' }}">
+          {{ "Space available" if room.has_space else "Full" }}
+        </div>
+        <div>
+          <form method="post" action="{{ url_for('delete_room', room_id=room.id) }}" onsubmit="return confirm('Delete this room?')">
+            <button type="submit" {% if room.occupied > 0 %}disabled{% endif %}>Delete</button>
+          </form>
+        </div>
+      </div>
+    {% else %}
+      <div class="table-row muted">No rooms yet.</div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}
+
